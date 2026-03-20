@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<!--
+  CDP Hockey - Campaña Metros Cuadrados
+  Frontend
+  2026-03-20 15:00 ARG
+-->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Construí la Cancha | CDP Hockey</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --verde-oscuro: #0d3b1e;
+      --verde-cesped: #1a5d1a;
+      --verde-claro: #2e8b2e;
+      --verde-brillante: #4ade4a;
+      --verde-palido: #d4edda;
+      --crema: #faf9f6;
+      --gris-suave: #f5f5f0;
+      --gris-texto: #5a5a5a;
+      --blanco: #ffffff;
+      --negro: #1a1a1a;
+      --dorado: #d4a853;
+      
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+      
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 32px;
+      
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.12);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.16);
+      --shadow-glow: 0 0 40px rgba(26,93,26,0.3);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      background: var(--crema);
+      color: var(--negro);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    /* ===== HERO SECTION ===== */
+    .hero {
+      background: linear-gradient(165deg, var(--verde-oscuro) 0%, var(--verde-cesped) 50%, var(--verde-claro) 100%);
+      padding: 2rem 1.5rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 30px,
+          rgba(255,255,255,0.03) 30px,
+          rgba(255,255,255,0.03) 31px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 30px,
+          rgba(255,255,255,0.03) 30px,
+          rgba(255,255,255,0.03) 31px
+        );
+      pointer-events: none;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      padding: 8px 16px 8px 10px;
+      border-radius: 50px;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .logo-badge img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: white;
+    }
+    
+    .logo-badge span {
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      color: white;
+      letter-spacing: 2px;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    
+    .hero p {
+      color: rgba(255,255,255,0.85);
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+    
+    /* ===== STATS BAR ===== */
+    .stats-bar {
+      background: white;
+      margin: -1.5rem 1rem 1.5rem;
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      z-index: 10;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    @media (min-width: 480px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 0.5rem;
+    }
+    
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--verde-cesped);
+      line-height: 1;
+    }
+    
+    .stat-value.highlight {
+      color: var(--verde-brillante);
+      text-shadow: 0 0 20px rgba(74,222,74,0.4);
+    }
+    
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--gris-texto);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+    
+    /* ===== CANCHA VISUAL ===== */
+    .cancha-section {
+      padding: 0 1rem 2rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+    
+    .cancha-container {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .cancha-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .cancha-title {
+      font-size: 0.85rem;
+      color: var(--gris-texto);
+    }
+    
+    .cancha-progress {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--verde-cesped);
+    }
+    
+    .cancha-svg-wrapper {
+      width: 100%;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+    }
+    
+    .cancha-svg-wrapper svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    
+    .cancha-legend {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--gris-texto);
+    }
+    
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+    }
+    
+    .legend-dot.vendido {
+      background: linear-gradient(135deg, var(--verde-cesped), var(--verde-claro));
+    }
+    
+    .legend-dot.disponible {
+      background: #d4d4c4;
+    }
+    
+    /* ===== PACKS SECTION ===== */
+    .packs-section {
+      padding: 0 1rem 2rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+    
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--verde-oscuro);
+      margin-bottom: 1rem;
+      letter-spacing: 1px;
+    }
+    
+    .packs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    
+    @media (min-width: 480px) {
+      .packs-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    .pack-card {
+      background: white;
+      border: 2px solid transparent;
+      border-radius: var(--radius-md);
+      padding: 1.25rem 0.75rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .pack-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .pack-card.selected {
+      border-color: var(--verde-cesped);
+      background: var(--verde-palido);
+    }
+    
+    .pack-card.destacado::before {
+      content: 'POPULAR';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--dorado);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+    
+    .pack-metros {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: var(--verde-cesped);
+      line-height: 1;
+    }
+    
+    .pack-label {
+      font-size: 0.8rem;
+      color: var(--gris-texto);
+      margin: 4px 0 8px;
+    }
+    
+    .pack-precio {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--negro);
+    }
+    
+    /* Custom input */
+    .custom-input-section {
+      margin-top: 1.25rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-end;
+    }
+    
+    .input-group {
+      flex: 1;
+    }
+    
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--gris-texto);
+      margin-bottom: 6px;
+    }
+    
+    .input-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--verde-cesped);
+    }
+    
+    .total-display {
+      text-align: right;
+      min-width: 120px;
+    }
+    
+    .total-label {
+      font-size: 0.8rem;
+      color: var(--gris-texto);
+    }
+    
+    .total-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--verde-cesped);
+      line-height: 1.1;
+    }
+    
+    /* ===== FORM SECTION ===== */
+    .form-section {
+      padding: 0 1rem 2rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+    
+    .form-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .form-row {
+      margin-bottom: 1rem;
+    }
+    
+    .form-row.two-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    @media (max-width: 480px) {
+      .form-row.two-cols {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .btn-primary {
+      width: 100%;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, var(--verde-cesped), var(--verde-claro));
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-md), var(--shadow-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg), 0 0 60px rgba(26,93,26,0.4);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    /* ===== CONTRIBUTORS SECTION ===== */
+    .contributors-section {
+      padding: 0 1rem 3rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+    
+    .contributors-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .contributors-count {
+      font-size: 0.9rem;
+      color: var(--gris-texto);
+    }
+    
+    .contributors-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .contributor-card {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+    
+    .contributor-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    
+    .contributor-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--verde-cesped), var(--verde-claro));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    
+    .contributor-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .contributor-name {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--negro);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .contributor-date {
+      font-size: 0.8rem;
+      color: var(--gris-texto);
+    }
+    
+    .contributor-metros {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    
+    .contributor-metros-value {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      color: var(--verde-cesped);
+      line-height: 1;
+    }
+    
+    .contributor-metros-label {
+      font-size: 0.75rem;
+      color: var(--gris-texto);
+    }
+    
+    .btn-load-more {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 2px solid var(--verde-cesped);
+      border-radius: var(--radius-md);
+      color: var(--verde-cesped);
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 1rem;
+    }
+    
+    .btn-load-more:hover {
+      background: var(--verde-palido);
+    }
+    
+    .btn-load-more:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+    
+    .modal-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--verde-palido);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    
+    .modal-icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: var(--verde-cesped);
+    }
+    
+    .modal h3 {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--verde-oscuro);
+      margin-bottom: 0.5rem;
+    }
+    
+    .modal p {
+      color: var(--gris-texto);
+      margin-bottom: 1.5rem;
+    }
+    
+    .modal .btn-primary {
+      font-size: 1.1rem;
+    }
+    
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--verde-oscuro);
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.85rem;
+    }
+    
+    footer a {
+      color: white;
+      text-decoration: none;
+    }
+    
+    /* ===== LOADING STATES ===== */
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: var(--radius-sm);
+    }
+    
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    
+    .loading-spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* ===== UTILS ===== */
+    .hidden { display: none !important; }
+    .text-center { text-align: center; }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="logo-badge">
+        <div style="width:36px;height:36px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a5d1a" stroke-width="2.5">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 2v20M2 12h20"/>
+          </svg>
+        </div>
+        <span>CLUB DE PROFESIONALES</span>
+      </div>
+      <h1>CONSTRUÍ LA CANCHA CON NOSOTROS</h1>
+      <p>Sumate a hacer realidad el césped sintético de hockey</p>
+    </div>
+  </section>
+  
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-value" id="statMeta">5.027</div>
+        <div class="stat-label">m² meta</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value highlight" id="statVendidos">0</div>
+        <div class="stat-label">m² vendidos</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="statDisponibles">5.027</div>
+        <div class="stat-label">m² disponibles</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="statPrecio">$5.000</div>
+        <div class="stat-label">por m²</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- CANCHA VISUAL -->
+  <section class="cancha-section">
+    <div class="cancha-container">
+      <div class="cancha-header">
+        <span class="cancha-title">Vista de la cancha</span>
+        <span class="cancha-progress" id="canchaProgress">0%</span>
+      </div>
+      <div class="cancha-svg-wrapper">
+        <svg id="canchaSvg" viewBox="0 0 600 380">
+          <defs>
+            <pattern id="grassSold" patternUnits="userSpaceOnUse" width="8" height="8">
+              <rect width="8" height="8" fill="#2e8b2e"/>
+              <line x1="0" y1="4" x2="8" y2="4" stroke="#3aa03a" stroke-width="0.5"/>
+            </pattern>
+            <pattern id="grassEmpty" patternUnits="userSpaceOnUse" width="8" height="8">
+              <rect width="8" height="8" fill="#d4d4c4"/>
+              <line x1="0" y1="4" x2="8" y2="4" stroke="#c8c8b8" stroke-width="0.5"/>
+            </pattern>
+            <linearGradient id="soldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#1a5d1a"/>
+              <stop offset="100%" stop-color="#2e8b2e"/>
+            </linearGradient>
+          </defs>
+          
+          <!-- Cancha base (vacía) -->
+          <rect x="20" y="20" width="560" height="340" fill="url(#grassEmpty)" rx="4"/>
+          
+          <!-- Área vendida (se actualiza dinámicamente) -->
+          <rect id="soldArea" x="20" y="20" width="560" height="0" fill="url(#grassSold)"/>
+          
+          <!-- Líneas de la cancha -->
+          <g stroke="white" stroke-width="2" fill="none">
+            <!-- Borde -->
+            <rect x="20" y="20" width="560" height="340" rx="4" stroke-width="3"/>
+            <!-- Línea central -->
+            <line x1="20" y1="190" x2="580" y2="190"/>
+            <!-- Círculo central -->
+            <circle cx="300" cy="190" r="30"/>
+            <circle cx="300" cy="190" r="3" fill="white"/>
+            <!-- Áreas -->
+            <rect x="20" y="130" width="80" height="120" stroke-dasharray="5,3"/>
+            <rect x="500" y="130" width="80" height="120" stroke-dasharray="5,3"/>
+            <!-- Círculos de tiro -->
+            <path d="M 20 90 Q 80 90 80 130 L 80 250 Q 80 290 20 290"/>
+            <path d="M 580 90 Q 520 90 520 130 L 520 250 Q 520 290 580 290"/>
+            <!-- Arcos -->
+            <rect x="20" y="160" width="15" height="60"/>
+            <rect x="565" y="160" width="15" height="60"/>
+          </g>
+          
+          <!-- Texto de progreso -->
+          <text id="progressText" x="300" y="195" text-anchor="middle" fill="white" font-family="Bebas Neue, sans-serif" font-size="16" opacity="0.9"></text>
+        </svg>
+      </div>
+      <div class="cancha-legend">
+        <div class="legend-item">
+          <div class="legend-dot vendido"></div>
+          <span>Vendido</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot disponible"></div>
+          <span>Disponible</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- PACKS -->
+  <section class="packs-section">
+    <h2 class="section-title">ELEGÍ TU APORTE</h2>
+    <div class="packs-grid" id="packsGrid">
+      <!-- Se llena dinámicamente -->
+    </div>
+    <div class="custom-input-section">
+      <div class="input-group">
+        <label for="customMetros">O ingresá una cantidad personalizada</label>
+        <input type="number" id="customMetros" min="1" max="500" value="1" placeholder="Cantidad de m²">
+      </div>
+      <div class="total-display">
+        <div class="total-label">Total</div>
+        <div class="total-value" id="totalValue">$5.000</div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- FORM -->
+  <section class="form-section">
+    <div class="form-card">
+      <form id="aporteForm">
+        <div class="form-row two-cols">
+          <div class="input-group">
+            <label for="nombre">Nombre completo *</label>
+            <input type="text" id="nombre" required placeholder="Tu nombre">
+          </div>
+          <div class="input-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" required placeholder="tu@email.com">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="input-group">
+            <label for="telefono">Teléfono (opcional)</label>
+            <input type="tel" id="telefono" placeholder="3442-000000">
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" id="btnSubmit">
+          <span>COMPRAR MIS METROS²</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </section>
+  
+  <!-- CONTRIBUTORS -->
+  <section class="contributors-section">
+    <div class="contributors-header">
+      <h2 class="section-title">CONTRIBUYENTES</h2>
+      <span class="contributors-count" id="contributorsCount">Cargando...</span>
+    </div>
+    <div class="contributors-list" id="contributorsList">
+      <!-- Se llena dinámicamente -->
+    </div>
+    <button class="btn-load-more hidden" id="btnLoadMore">Ver más contribuyentes</button>
+  </section>
+  
+  <!-- FOOTER -->
+  <footer>
+    <p>Club de Profesionales · Concepción del Uruguay</p>
+    <p style="margin-top:0.5rem;opacity:0.7;">Campaña Césped Sintético Hockey 2026</p>
+  </footer>
+  
+  <!-- MODAL SUCCESS -->
+  <div class="modal-overlay" id="modalSuccess">
+    <div class="modal">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 6L9 17l-5-5"/>
+        </svg>
+      </div>
+      <h3>¡GRACIAS!</h3>
+      <p id="modalMessage">Tu aporte fue registrado. Te contactaremos para coordinar el pago.</p>
+      <button class="btn-primary" onclick="closeModal()">CERRAR</button>
+    </div>
+  </div>
+
+<script>
+// =============================================
+// CONFIG & STATE
+// =============================================
+const CONFIG = {
+  LIMIT_APORTES: 5
+};
+
+let state = {
+  metrosTotales: 5027,
+  metrosVendidos: 0,
+  precioPorMetro: 5000,
+  packs: [],
+  aportes: [],
+  aportesOffset: 0,
+  hasMoreAportes: false,
+  selectedMetros: 1,
+  loading: false
+};
+
+// =============================================
+// API CALLS - usando google.script.run
+// =============================================
+function callServer(functionName, ...args) {
+  return new Promise((resolve, reject) => {
+    google.script.run
+      .withSuccessHandler(resolve)
+      .withFailureHandler(reject)
+      [functionName](...args);
+  });
+}
+
+// =============================================
+// RENDER FUNCTIONS
+// =============================================
+function formatNumber(num) {
+  return num.toLocaleString('es-AR');
+}
+
+function formatCurrency(num) {
+  return '$' + formatNumber(num);
+}
+
+function getInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+}
+
+function timeAgo(dateStr) {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  
+  if (diffMins < 60) return `Hace ${diffMins} min`;
+  if (diffHours < 24) return `Hace ${diffHours} horas`;
+  if (diffDays === 1) return 'Ayer';
+  if (diffDays < 7) return `Hace ${diffDays} días`;
+  return date.toLocaleDateString('es-AR');
+}
+
+function updateStats() {
+  document.getElementById('statMeta').textContent = formatNumber(state.metrosTotales);
+  document.getElementById('statVendidos').textContent = formatNumber(state.metrosVendidos);
+  document.getElementById('statDisponibles').textContent = formatNumber(state.metrosTotales - state.metrosVendidos);
+  document.getElementById('statPrecio').textContent = formatCurrency(state.precioPorMetro);
+}
+
+function updateCancha() {
+  const pct = Math.min((state.metrosVendidos / state.metrosTotales) * 100, 100);
+  const height = (pct / 100) * 340;
+  
+  document.getElementById('soldArea').setAttribute('height', height);
+  document.getElementById('canchaProgress').textContent = pct.toFixed(1) + '%';
+  document.getElementById('progressText').textContent = pct >= 5 ? `${pct.toFixed(0)}% VENDIDO` : '';
+}
+
+function renderPacks() {
+  const grid = document.getElementById('packsGrid');
+  grid.innerHTML = state.packs.map(pack => `
+    <div class="pack-card ${pack.destacado ? 'destacado' : ''}" data-metros="${pack.metros}" onclick="selectPack(${pack.metros})">
+      <div class="pack-metros">${pack.metros}</div>
+      <div class="pack-label">metro${pack.metros > 1 ? 's' : ''}²</div>
+      <div class="pack-precio">${formatCurrency(pack.precio)}</div>
+    </div>
+  `).join('');
+}
+
+function selectPack(metros) {
+  state.selectedMetros = metros;
+  document.getElementById('customMetros').value = metros;
+  updateTotal();
+  updatePackSelection();
+}
+
+function updatePackSelection() {
+  document.querySelectorAll('.pack-card').forEach(card => {
+    const m = parseInt(card.dataset.metros);
+    card.classList.toggle('selected', m === state.selectedMetros);
+  });
+}
+
+function updateTotal() {
+  const total = state.selectedMetros * state.precioPorMetro;
+  document.getElementById('totalValue').textContent = formatCurrency(total);
+}
+
+function renderAportes(append = false) {
+  const list = document.getElementById('contributorsList');
+  const html = state.aportes.map(a => `
+    <div class="contributor-card">
+      <div class="contributor-avatar">${getInitials(a.nombre)}</div>
+      <div class="contributor-info">
+        <div class="contributor-name">${a.nombre}</div>
+        <div class="contributor-date">${timeAgo(a.fecha)}</div>
+      </div>
+      <div class="contributor-metros">
+        <div class="contributor-metros-value">${a.metros}</div>
+        <div class="contributor-metros-label">m²</div>
+      </div>
+    </div>
+  `).join('');
+  
+  if (append) {
+    list.innerHTML += html;
+  } else {
+    list.innerHTML = html;
+  }
+  
+  document.getElementById('btnLoadMore').classList.toggle('hidden', !state.hasMoreAportes);
+}
+
+function updateContributorsCount(total) {
+  document.getElementById('contributorsCount').textContent = `${total} aportes`;
+}
+
+// =============================================
+// EVENT HANDLERS
+// =============================================
+document.getElementById('customMetros').addEventListener('input', function() {
+  let val = parseInt(this.value) || 1;
+  val = Math.max(1, Math.min(500, val));
+  state.selectedMetros = val;
+  updateTotal();
+  updatePackSelection();
+});
+
+document.getElementById('aporteForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const btn = document.getElementById('btnSubmit');
+  const originalContent = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<div class="loading-spinner"></div>';
+  
+  const data = {
+    nombre: document.getElementById('nombre').value,
+    email: document.getElementById('email').value,
+    telefono: document.getElementById('telefono').value,
+    metros: state.selectedMetros,
+    metodoPago: 'TRANSFERENCIA'
+  };
+  
+  try {
+    const result = await callServer('registrarAporte', data);
+    
+    btn.disabled = false;
+    btn.innerHTML = originalContent;
+    
+    if (result.success) {
+      document.getElementById('modalMessage').textContent = 
+        `Registraste ${result.metros} m² por ${formatCurrency(result.monto)}. Te contactaremos para coordinar el pago.`;
+      document.getElementById('modalSuccess').classList.add('active');
+      document.getElementById('aporteForm').reset();
+      state.selectedMetros = 1;
+      updateTotal();
+      updatePackSelection();
+    } else {
+      alert(result.error || 'Error al registrar el aporte');
+    }
+  } catch (err) {
+    btn.disabled = false;
+    btn.innerHTML = originalContent;
+    alert('Error de conexión: ' + err.message);
+  }
+});
+
+document.getElementById('btnLoadMore').addEventListener('click', async function() {
+  this.disabled = true;
+  this.textContent = 'Cargando...';
+  
+  state.aportesOffset += CONFIG.LIMIT_APORTES;
+  
+  try {
+    const result = await callServer('getAportes', CONFIG.LIMIT_APORTES, state.aportesOffset);
+    
+    if (result.success) {
+      state.aportes = [...state.aportes, ...result.aportes];
+      state.hasMoreAportes = result.hasMore;
+      renderAportes(true);
+    }
+  } catch (err) {
+    console.error('Error cargando aportes:', err);
+  }
+  
+  this.disabled = false;
+  this.textContent = 'Ver más contribuyentes';
+});
+
+function closeModal() {
+  document.getElementById('modalSuccess').classList.remove('active');
+}
+
+// Close modal on overlay click
+document.getElementById('modalSuccess').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// =============================================
+// INIT
+// =============================================
+async function init() {
+  try {
+    // Cargar estado inicial
+    const estadoResult = await callServer('getEstado');
+    
+    if (estadoResult.success) {
+      state.metrosTotales = estadoResult.metrosTotales;
+      state.metrosVendidos = estadoResult.metrosVendidos;
+      state.precioPorMetro = estadoResult.precioPorMetro;
+      state.packs = estadoResult.packs;
+      
+      updateStats();
+      updateCancha();
+      renderPacks();
+      updateTotal();
+    }
+    
+    // Cargar aportes
+    const aportesResult = await callServer('getAportes', CONFIG.LIMIT_APORTES, 0);
+    
+    if (aportesResult.success) {
+      state.aportes = aportesResult.aportes;
+      state.hasMoreAportes = aportesResult.hasMore;
+      renderAportes();
+      updateContributorsCount(aportesResult.total);
+    }
+  } catch (err) {
+    console.error('Error inicializando:', err);
+    // Mostrar mensaje de error al usuario
+    document.getElementById('contributorsList').innerHTML = 
+      '<p style="text-align:center;color:#999;padding:2rem;">Error cargando datos. Recargá la página.</p>';
+  }
+}
+
+// Start
+init();
+</script>
+
+</body>
+</html>
