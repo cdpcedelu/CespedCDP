@@ -2,7 +2,7 @@
 <!--
   CDP Hockey - Campaña Metros Cuadrados
   Frontend
-  2026-03-20 16:00 ARG
+  2026-03-20 16:10 ARG
   SCRIPT_URL: https://script.google.com/macros/s/AKfycbyQcsJI1TSkDrhxavxryT0A2JrpfbjGGhdpZfsAe87AyWMMJTP5H3MzKQ8d8w5g6H1r/exec
 -->
 <html lang="es">
@@ -10,6 +10,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Construí la Cancha | CDP Hockey</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1evrGwiWdvbM39EVJk0LGtbM8Fa100IFF">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -715,9 +718,9 @@
       <div class="logo-badge">
         <img src="https://lh3.googleusercontent.com/d/1evrGwiWdvbM39EVJk0LGtbM8Fa100IFF" 
              alt="CDP" 
-             style="width:48px;height:48px;object-fit:contain;background:white;border-radius:8px;padding:4px;"
+             style="width:56px;height:56px;object-fit:contain;background:white;border-radius:10px;padding:2px;"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-        <div style="width:48px;height:48px;background:white;border-radius:8px;display:none;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.1rem;color:#2855A4;letter-spacing:1px;">CDP</div>
+        <div style="width:56px;height:56px;background:white;border-radius:10px;display:none;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.3rem;color:#2855A4;letter-spacing:1px;">CDP</div>
         <span>CLUB DE PROFESIONALES</span>
       </div>
       <h1>CONSTRUÍ LA CANCHA CON NOSOTROS</h1>
@@ -899,6 +902,7 @@
 // CONFIG & STATE
 // =============================================
 const CONFIG = {
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyQcsJI1TSkDrhxavxryT0A2JrpfbjGGhdpZfsAe87AyWMMJTP5H3MzKQ8d8w5g6H1r/exec',
   LIMIT_APORTES: 5
 };
 
@@ -915,15 +919,22 @@ let state = {
 };
 
 // =============================================
-// API CALLS - usando google.script.run
+// API CALLS - usando fetch para GitHub Pages
 // =============================================
-function callServer(functionName, ...args) {
-  return new Promise((resolve, reject) => {
-    google.script.run
-      .withSuccessHandler(resolve)
-      .withFailureHandler(reject)
-      [functionName](...args);
-  });
+async function callServer(action, data = {}) {
+  try {
+    const response = await fetch(CONFIG.SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify({ action, ...data })
+    });
+    return await response.json();
+  } catch (err) {
+    console.error('API Error:', err);
+    throw err;
+  }
 }
 
 // =============================================
@@ -1089,7 +1100,7 @@ document.getElementById('btnLoadMore').addEventListener('click', async function(
   state.aportesOffset += CONFIG.LIMIT_APORTES;
   
   try {
-    const result = await callServer('getAportes', CONFIG.LIMIT_APORTES, state.aportesOffset);
+    const result = await callServer('getAportes', { limit: CONFIG.LIMIT_APORTES, offset: state.aportesOffset });
     
     if (result.success) {
       state.aportes = [...state.aportes, ...result.aportes];
@@ -1145,7 +1156,7 @@ async function init() {
   // Cargar aportes (independiente del estado)
   try {
     console.log('Llamando a getAportes...');
-    const aportesResult = await callServer('getAportes', CONFIG.LIMIT_APORTES, 0);
+    const aportesResult = await callServer('getAportes', { limit: CONFIG.LIMIT_APORTES, offset: 0 });
     console.log('getAportes resultado:', aportesResult);
     
     if (aportesResult && aportesResult.success) {
