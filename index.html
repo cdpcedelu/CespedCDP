@@ -206,7 +206,7 @@
       margin-top: 4px;
     }
     
-    /* ===== CANCHA VISUAL ===== */
+    /* ===== PROGRESS VISUAL ===== */
     .cancha-section {
       padding: 0 1rem 2rem;
       max-width: 650px;
@@ -216,68 +216,120 @@
     .cancha-container {
       background: white;
       border-radius: var(--radius-lg);
-      padding: 1.25rem;
+      padding: 2rem 1.5rem;
       box-shadow: var(--shadow-md);
+      text-align: center;
     }
     
-    .cancha-header {
+    .progress-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    @media (min-width: 480px) {
+      .progress-hero {
+        flex-direction: row;
+        justify-content: center;
+        gap: 3rem;
+      }
+    }
+    
+    .progress-badge {
+      background: linear-gradient(135deg, var(--verde-cdp), var(--verde-claro));
+      border-radius: 50%;
+      width: 160px;
+      height: 160px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 32px rgba(46,139,74,0.35);
+      flex-shrink: 0;
+    }
+    
+    .progress-percentage {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      color: white;
+      line-height: 1;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    .progress-label {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 3px;
+      margin-top: 4px;
+    }
+    
+    .progress-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      text-align: left;
+    }
+    
+    .progress-stat {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .progress-stat-value {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      color: var(--azul-cdp);
+      line-height: 1;
+    }
+    
+    .progress-stat-label {
+      font-size: 0.9rem;
+      color: var(--gris-texto);
+      margin-top: 2px;
+    }
+    
+    /* Barra de progreso */
+    .progress-bar-container {
+      margin-bottom: 1.5rem;
+    }
+    
+    .progress-bar-bg {
+      background: var(--gris-suave);
+      border-radius: 50px;
+      height: 24px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+    }
+    
+    .progress-bar-fill {
+      background: linear-gradient(90deg, var(--verde-cdp), var(--verde-claro), var(--verde-brillante));
+      height: 100%;
+      border-radius: 50px;
+      transition: width 1s ease-out;
+      box-shadow: 0 0 20px rgba(46,139,74,0.4);
+    }
+    
+    .progress-bar-labels {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    
-    .cancha-title {
-      font-size: 0.85rem;
+      margin-top: 8px;
+      font-size: 0.75rem;
       color: var(--gris-texto);
     }
     
-    .cancha-progress {
-      font-family: var(--font-display);
-      font-size: 1.5rem;
-      color: var(--verde-cdp);
+    .progress-bar-labels span:nth-child(2) {
+      font-weight: 600;
+      color: var(--azul-cdp);
     }
     
-    .cancha-svg-wrapper {
-      width: 100%;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
-    }
-    
-    .cancha-svg-wrapper svg {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-    
-    .cancha-legend {
+    /* Mini cancha decorativa */
+    .mini-cancha {
       display: flex;
       justify-content: center;
-      gap: 1.5rem;
-      margin-top: 1rem;
-      font-size: 0.85rem;
-    }
-    
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--gris-texto);
-    }
-    
-    .legend-dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 3px;
-    }
-    
-    .legend-dot.vendido {
-      background: linear-gradient(135deg, var(--verde-cesped), var(--verde-claro));
-    }
-    
-    .legend-dot.disponible {
-      background: #d4d4c4;
+      padding-top: 0.5rem;
     }
     
     /* ===== PACKS SECTION ===== */
@@ -753,66 +805,45 @@
   <!-- CANCHA VISUAL -->
   <section class="cancha-section">
     <div class="cancha-container">
-      <div class="cancha-header">
-        <span class="cancha-title">Vista de la cancha</span>
-        <span class="cancha-progress" id="canchaProgress">0%</span>
+      <!-- Progress visual grande -->
+      <div class="progress-hero">
+        <div class="progress-badge">
+          <div class="progress-percentage" id="canchaProgress">0%</div>
+          <div class="progress-label">VENDIDO</div>
+        </div>
+        <div class="progress-details">
+          <div class="progress-stat">
+            <span class="progress-stat-value" id="metrosVendidosDisplay">0</span>
+            <span class="progress-stat-label">m² vendidos</span>
+          </div>
+          <div class="progress-stat">
+            <span class="progress-stat-value" id="metrosRestantesDisplay">5.027</span>
+            <span class="progress-stat-label">m² restantes</span>
+          </div>
+        </div>
       </div>
-      <div class="cancha-svg-wrapper">
-        <svg id="canchaSvg" viewBox="0 0 600 380">
-          <defs>
-            <pattern id="grassSold" patternUnits="userSpaceOnUse" width="8" height="8">
-              <rect width="8" height="8" fill="#2e8b2e"/>
-              <line x1="0" y1="4" x2="8" y2="4" stroke="#3aa03a" stroke-width="0.5"/>
-            </pattern>
-            <pattern id="grassEmpty" patternUnits="userSpaceOnUse" width="8" height="8">
-              <rect width="8" height="8" fill="#d4d4c4"/>
-              <line x1="0" y1="4" x2="8" y2="4" stroke="#c8c8b8" stroke-width="0.5"/>
-            </pattern>
-            <linearGradient id="soldGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#1a5d1a"/>
-              <stop offset="100%" stop-color="#2e8b2e"/>
-            </linearGradient>
-          </defs>
-          
-          <!-- Cancha base (vacía) -->
-          <rect x="20" y="20" width="560" height="340" fill="url(#grassEmpty)" rx="4"/>
-          
-          <!-- Área vendida (se actualiza dinámicamente) -->
-          <rect id="soldArea" x="20" y="20" width="560" height="0" fill="url(#grassSold)"/>
-          
-          <!-- Líneas de la cancha -->
-          <g stroke="white" stroke-width="2" fill="none">
-            <!-- Borde -->
-            <rect x="20" y="20" width="560" height="340" rx="4" stroke-width="3"/>
-            <!-- Línea central -->
-            <line x1="20" y1="190" x2="580" y2="190"/>
-            <!-- Círculo central -->
-            <circle cx="300" cy="190" r="30"/>
-            <circle cx="300" cy="190" r="3" fill="white"/>
-            <!-- Áreas -->
-            <rect x="20" y="130" width="80" height="120" stroke-dasharray="5,3"/>
-            <rect x="500" y="130" width="80" height="120" stroke-dasharray="5,3"/>
-            <!-- Círculos de tiro -->
-            <path d="M 20 90 Q 80 90 80 130 L 80 250 Q 80 290 20 290"/>
-            <path d="M 580 90 Q 520 90 520 130 L 520 250 Q 520 290 580 290"/>
-            <!-- Arcos -->
-            <rect x="20" y="160" width="15" height="60"/>
-            <rect x="565" y="160" width="15" height="60"/>
-          </g>
-          
-          <!-- Texto de progreso -->
-          <text id="progressText" x="300" y="195" text-anchor="middle" fill="white" font-family="Bebas Neue, sans-serif" font-size="16" opacity="0.9"></text>
+      
+      <!-- Barra de progreso -->
+      <div class="progress-bar-container">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
+        </div>
+        <div class="progress-bar-labels">
+          <span>0%</span>
+          <span>META: 5.027 m²</span>
+          <span>100%</span>
+        </div>
+      </div>
+      
+      <!-- Mini cancha decorativa -->
+      <div class="mini-cancha">
+        <svg viewBox="0 0 200 120" style="width:100%;max-width:300px;height:auto;opacity:0.6;">
+          <rect x="5" y="5" width="190" height="110" fill="none" stroke="#2E8B4A" stroke-width="2" rx="2"/>
+          <line x1="100" y1="5" x2="100" y2="115" stroke="#2E8B4A" stroke-width="1"/>
+          <circle cx="100" cy="60" r="15" fill="none" stroke="#2E8B4A" stroke-width="1"/>
+          <rect x="5" y="35" width="25" height="50" fill="none" stroke="#2E8B4A" stroke-width="1"/>
+          <rect x="170" y="35" width="25" height="50" fill="none" stroke="#2E8B4A" stroke-width="1"/>
         </svg>
-      </div>
-      <div class="cancha-legend">
-        <div class="legend-item">
-          <div class="legend-dot vendido"></div>
-          <span>Vendido</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot disponible"></div>
-          <span>Disponible</span>
-        </div>
       </div>
     </div>
   </section>
@@ -976,11 +1007,16 @@ function updateStats() {
 
 function updateCancha() {
   const pct = Math.min((state.metrosVendidos / state.metrosTotales) * 100, 100);
-  const height = (pct / 100) * 340;
   
-  document.getElementById('soldArea').setAttribute('height', height);
+  // Actualizar badge grande
   document.getElementById('canchaProgress').textContent = pct.toFixed(1) + '%';
-  document.getElementById('progressText').textContent = pct >= 5 ? `${pct.toFixed(0)}% VENDIDO` : '';
+  
+  // Actualizar detalles
+  document.getElementById('metrosVendidosDisplay').textContent = formatNumber(state.metrosVendidos);
+  document.getElementById('metrosRestantesDisplay').textContent = formatNumber(state.metrosTotales - state.metrosVendidos);
+  
+  // Actualizar barra de progreso
+  document.getElementById('progressBarFill').style.width = pct + '%';
 }
 
 function renderPacks() {
