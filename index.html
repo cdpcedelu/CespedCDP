@@ -2,7 +2,7 @@
 <!--
   CDP Hockey - Campaña Metros Cuadrados
   Frontend
-  2026-03-20 15:00 ARG
+  2026-03-20 15:30 ARG
 -->
 <html lang="es">
 <head>
@@ -17,17 +17,23 @@
   
   <style>
     :root {
-      --verde-oscuro: #0d3b1e;
-      --verde-cesped: #1a5d1a;
-      --verde-claro: #2e8b2e;
-      --verde-brillante: #4ade4a;
-      --verde-palido: #d4edda;
-      --crema: #faf9f6;
-      --gris-suave: #f5f5f0;
-      --gris-texto: #5a5a5a;
-      --blanco: #ffffff;
-      --negro: #1a1a1a;
-      --dorado: #d4a853;
+      /* Colores oficiales CDP */
+      --azul-cdp: #2855A4;
+      --azul-oscuro: #1E4080;
+      --azul-claro: #3A6BC4;
+      --verde-cdp: #2E8B4A;
+      --verde-oscuro: #1F6B35;
+      --verde-claro: #3CA85C;
+      --verde-cesped: #2E8B4A;
+      --verde-brillante: #4ADE6A;
+      --verde-palido: #E8F5EC;
+      
+      --crema: #FAFBFC;
+      --gris-suave: #F0F2F5;
+      --gris-texto: #5A6270;
+      --blanco: #FFFFFF;
+      --negro: #1A1A1A;
+      --dorado: #D4A853;
       
       --font-display: 'Bebas Neue', sans-serif;
       --font-body: 'Barlow', sans-serif;
@@ -38,9 +44,10 @@
       --radius-xl: 32px;
       
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-      --shadow-md: 0 4px 20px rgba(0,0,0,0.12);
-      --shadow-lg: 0 8px 40px rgba(0,0,0,0.16);
-      --shadow-glow: 0 0 40px rgba(26,93,26,0.3);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.10);
+      --shadow-lg: 0 8px 40px rgba(0,0,0,0.14);
+      --shadow-glow-green: 0 0 40px rgba(46,139,74,0.25);
+      --shadow-glow-blue: 0 0 40px rgba(40,85,164,0.25);
     }
     
     * {
@@ -63,7 +70,7 @@
     
     /* ===== HERO SECTION ===== */
     .hero {
-      background: linear-gradient(165deg, var(--verde-oscuro) 0%, var(--verde-cesped) 50%, var(--verde-claro) 100%);
+      background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-cdp) 40%, var(--verde-cdp) 100%);
       padding: 2rem 1.5rem 3rem;
       position: relative;
       overflow: hidden;
@@ -80,16 +87,16 @@
         repeating-linear-gradient(
           90deg,
           transparent,
-          transparent 30px,
-          rgba(255,255,255,0.03) 30px,
-          rgba(255,255,255,0.03) 31px
+          transparent 40px,
+          rgba(255,255,255,0.02) 40px,
+          rgba(255,255,255,0.02) 41px
         ),
         repeating-linear-gradient(
           0deg,
           transparent,
-          transparent 30px,
-          rgba(255,255,255,0.03) 30px,
-          rgba(255,255,255,0.03) 31px
+          transparent 40px,
+          rgba(255,255,255,0.02) 40px,
+          rgba(255,255,255,0.02) 41px
         );
       pointer-events: none;
     }
@@ -178,13 +185,13 @@
     .stat-value {
       font-family: var(--font-display);
       font-size: 1.8rem;
-      color: var(--verde-cesped);
+      color: var(--azul-cdp);
       line-height: 1;
     }
     
     .stat-value.highlight {
-      color: var(--verde-brillante);
-      text-shadow: 0 0 20px rgba(74,222,74,0.4);
+      color: var(--verde-cdp);
+      text-shadow: 0 0 20px rgba(46,139,74,0.35);
     }
     
     .stat-label {
@@ -224,7 +231,7 @@
     .cancha-progress {
       font-family: var(--font-display);
       font-size: 1.5rem;
-      color: var(--verde-cesped);
+      color: var(--verde-cdp);
     }
     
     .cancha-svg-wrapper {
@@ -279,7 +286,7 @@
     .section-title {
       font-family: var(--font-display);
       font-size: 1.8rem;
-      color: var(--verde-oscuro);
+      color: var(--azul-oscuro);
       margin-bottom: 1rem;
       letter-spacing: 1px;
     }
@@ -311,10 +318,11 @@
     .pack-card:hover {
       transform: translateY(-4px);
       box-shadow: var(--shadow-md);
+      border-color: var(--azul-claro);
     }
     
     .pack-card.selected {
-      border-color: var(--verde-cesped);
+      border-color: var(--verde-cdp);
       background: var(--verde-palido);
     }
     
@@ -324,7 +332,7 @@
       top: -10px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--dorado);
+      background: var(--azul-cdp);
       color: white;
       font-size: 0.65rem;
       font-weight: 700;
@@ -336,7 +344,7 @@
     .pack-metros {
       font-family: var(--font-display);
       font-size: 2.5rem;
-      color: var(--verde-cesped);
+      color: var(--verde-cdp);
       line-height: 1;
     }
     
@@ -399,7 +407,7 @@
     .total-value {
       font-family: var(--font-display);
       font-size: 2rem;
-      color: var(--verde-cesped);
+      color: var(--verde-cdp);
       line-height: 1.1;
     }
     
@@ -436,7 +444,7 @@
     .btn-primary {
       width: 100%;
       padding: 16px 24px;
-      background: linear-gradient(135deg, var(--verde-cesped), var(--verde-claro));
+      background: linear-gradient(135deg, var(--verde-cdp), var(--verde-claro));
       color: white;
       border: none;
       border-radius: var(--radius-md);
@@ -445,7 +453,7 @@
       letter-spacing: 2px;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: var(--shadow-md), var(--shadow-glow);
+      box-shadow: var(--shadow-md), var(--shadow-glow-green);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -454,7 +462,7 @@
     
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: var(--shadow-lg), 0 0 60px rgba(26,93,26,0.4);
+      box-shadow: var(--shadow-lg), 0 0 60px rgba(46,139,74,0.35);
     }
     
     .btn-primary:active {
@@ -511,7 +519,7 @@
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--verde-cesped), var(--verde-claro));
+      background: linear-gradient(135deg, var(--azul-cdp), var(--azul-claro));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -548,7 +556,7 @@
     .contributor-metros-value {
       font-family: var(--font-display);
       font-size: 1.4rem;
-      color: var(--verde-cesped);
+      color: var(--verde-cdp);
       line-height: 1;
     }
     
@@ -561,9 +569,9 @@
       width: 100%;
       padding: 14px;
       background: transparent;
-      border: 2px solid var(--verde-cesped);
+      border: 2px solid var(--azul-cdp);
       border-radius: var(--radius-md);
-      color: var(--verde-cesped);
+      color: var(--azul-cdp);
       font-family: var(--font-body);
       font-weight: 600;
       font-size: 0.95rem;
@@ -573,7 +581,7 @@
     }
     
     .btn-load-more:hover {
-      background: var(--verde-palido);
+      background: var(--gris-suave);
     }
     
     .btn-load-more:disabled {
@@ -634,13 +642,13 @@
     .modal-icon svg {
       width: 32px;
       height: 32px;
-      stroke: var(--verde-cesped);
+      stroke: var(--verde-cdp);
     }
     
     .modal h3 {
       font-family: var(--font-display);
       font-size: 1.8rem;
-      color: var(--verde-oscuro);
+      color: var(--azul-oscuro);
       margin-bottom: 0.5rem;
     }
     
@@ -655,7 +663,7 @@
     
     /* ===== FOOTER ===== */
     footer {
-      background: var(--verde-oscuro);
+      background: var(--azul-oscuro);
       color: rgba(255,255,255,0.7);
       text-align: center;
       padding: 2rem 1rem;
@@ -704,12 +712,7 @@
   <section class="hero">
     <div class="hero-content">
       <div class="logo-badge">
-        <div style="width:36px;height:36px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a5d1a" stroke-width="2.5">
-            <circle cx="12" cy="12" r="10"/>
-            <path d="M12 2v20M2 12h20"/>
-          </svg>
-        </div>
+        <img src="https://drive.google.com/uc?export=view&id=1evrGwiWdvbM39EVJk0LGtbM8Fa100IFF" alt="CDP" style="width:48px;height:48px;object-fit:contain;background:white;border-radius:8px;padding:4px;">
         <span>CLUB DE PROFESIONALES</span>
       </div>
       <h1>CONSTRUÍ LA CANCHA CON NOSOTROS</h1>
