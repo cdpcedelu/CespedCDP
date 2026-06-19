@@ -2,7 +2,8 @@
 <!--
   CDP Hockey - Campaña Metros Cuadrados
   Frontend
-  2026-03-20 16:10 ARG
+  v2.0 - MercadoPago Checkout Pro
+  2026-06-19 14:30 ARG
   SCRIPT_URL: https://script.google.com/macros/s/AKfycbyQcsJI1TSkDrhxavxryT0A2JrpfbjGGhdpZfsAe87AyWMMJTP5H3MzKQ8d8w5g6H1r/exec
 -->
 <html lang="es">
@@ -530,6 +531,76 @@
       cursor: not-allowed;
       transform: none;
     }
+
+    /* Botón MercadoPago */
+    .btn-mp {
+      width: 100%;
+      padding: 16px 24px;
+      background: #009ee3;
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-md), 0 0 40px rgba(0,158,227,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-mp:hover {
+      background: #008fcc;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg), 0 0 60px rgba(0,158,227,0.35);
+    }
+
+    .btn-mp:active { transform: translateY(0); }
+
+    .btn-mp:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Botón transferencia secundario (cuando MP está activo) */
+    .btn-secondary {
+      width: 100%;
+      padding: 14px 24px;
+      background: transparent;
+      color: var(--verde-cdp);
+      border: 2px solid var(--verde-cdp);
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 0.75rem;
+    }
+
+    .btn-secondary:hover { background: var(--verde-palido); }
+
+    .btn-secondary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .pay-divider {
+      text-align: center;
+      color: var(--gris-texto);
+      font-size: 0.8rem;
+      margin: 0.25rem 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
     
     /* ===== CONTRIBUTORS SECTION ===== */
     .contributors-section {
@@ -886,12 +957,22 @@
             <input type="tel" id="telefono" placeholder="3442-000000">
           </div>
         </div>
-        <button type="submit" class="btn-primary" id="btnSubmit">
-          <span>COMPRAR MIS METROS²</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
-          </svg>
-        </button>
+        <div id="payButtons">
+          <button type="button" class="btn-mp hidden" id="btnMP">
+            <span>PAGAR CON MERCADOPAGO</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="5" width="20" height="14" rx="2"/>
+              <path d="M2 10h20"/>
+            </svg>
+          </button>
+          <div class="pay-divider hidden" id="payDivider">o</div>
+          <button type="submit" class="btn-primary" id="btnSubmit">
+            <span id="btnSubmitText">COMPRAR MIS METROS²</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
       </form>
     </div>
   </section>
@@ -946,7 +1027,9 @@ let state = {
   aportesOffset: 0,
   hasMoreAportes: false,
   selectedMetros: 1,
-  loading: false
+  loading: false,
+  mercadoPagoEnabled: false,
+  transferEnabled: true
 };
 
 // =============================================
@@ -1155,6 +1238,102 @@ function closeModal() {
   document.getElementById('modalSuccess').classList.remove('active');
 }
 
+// =============================================
+// PAGOS - helpers
+// =============================================
+function getFormData() {
+  return {
+    nombre: document.getElementById('nombre').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    telefono: document.getElementById('telefono').value.trim(),
+    metros: state.selectedMetros
+  };
+}
+
+function validarForm(d) {
+  if (!d.nombre) { alert('Ingresá tu nombre completo.'); return false; }
+  if (!d.email || !/^\S+@\S+\.\S+$/.test(d.email)) { alert('Ingresá un email válido.'); return false; }
+  if (!d.metros || d.metros < 1) { alert('Elegí al menos 1 m².'); return false; }
+  return true;
+}
+
+function applyPaymentMode() {
+  const btnMP = document.getElementById('btnMP');
+  const divider = document.getElementById('payDivider');
+  const btnSubmit = document.getElementById('btnSubmit');
+  const btnText = document.getElementById('btnSubmitText');
+
+  if (state.mercadoPagoEnabled) {
+    btnMP.classList.remove('hidden');
+    if (state.transferEnabled) {
+      divider.classList.remove('hidden');
+      btnSubmit.classList.remove('hidden');
+      btnSubmit.className = 'btn-secondary';
+      btnText.textContent = 'Reservar y pagar por transferencia';
+    } else {
+      divider.classList.add('hidden');
+      btnSubmit.classList.add('hidden');
+    }
+  } else {
+    btnMP.classList.add('hidden');
+    divider.classList.add('hidden');
+    btnSubmit.classList.remove('hidden');
+    btnSubmit.className = 'btn-primary';
+    btnText.textContent = 'COMPRAR MIS METROS²';
+  }
+}
+
+function handleReturnStatus() {
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('status');
+  if (!status) return;
+
+  let title = '', msg = '';
+  if (status === 'approved') {
+    title = '¡PAGO APROBADO!';
+    msg = '¡Gracias por tu aporte! Tu pago fue aprobado y ya suma a la cancha.';
+  } else if (status === 'pending') {
+    title = 'PAGO PENDIENTE';
+    msg = 'Tu pago quedó pendiente de acreditación. Apenas se acredite, tu aporte se confirma solo.';
+  } else if (status === 'failure') {
+    title = 'PAGO NO COMPLETADO';
+    msg = 'El pago no se completó. Podés intentarlo nuevamente cuando quieras.';
+  } else {
+    return;
+  }
+
+  document.querySelector('#modalSuccess h3').textContent = title;
+  document.getElementById('modalMessage').textContent = msg;
+  document.getElementById('modalSuccess').classList.add('active');
+  window.history.replaceState({}, document.title, window.location.pathname);
+}
+
+// Pago con MercadoPago (Checkout Pro)
+document.getElementById('btnMP').addEventListener('click', async function () {
+  const d = getFormData();
+  if (!validarForm(d)) return;
+
+  const btn = this;
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<div class="loading-spinner"></div>';
+
+  try {
+    const result = await callServer('crearPreferencia', d);
+    if (result && result.success && result.initPoint) {
+      window.location.href = result.initPoint;
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = original;
+      alert((result && result.error) || 'No se pudo iniciar el pago con MercadoPago.');
+    }
+  } catch (err) {
+    btn.disabled = false;
+    btn.innerHTML = original;
+    alert('Error de conexión: ' + err.message);
+  }
+});
+
 // Close modal on overlay click
 document.getElementById('modalSuccess').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
@@ -1165,7 +1344,10 @@ document.getElementById('modalSuccess').addEventListener('click', function(e) {
 // =============================================
 async function init() {
   console.log('Iniciando carga de datos...');
-  
+
+  // Mostrar resultado del pago si volvemos de MercadoPago
+  handleReturnStatus();
+
   // Cargar estado inicial
   try {
     console.log('Llamando a getEstado...');
@@ -1177,11 +1359,14 @@ async function init() {
       state.metrosVendidos = estadoResult.metrosVendidos;
       state.precioPorMetro = estadoResult.precioPorMetro;
       state.packs = estadoResult.packs || [];
+      state.mercadoPagoEnabled = !!estadoResult.mercadoPagoEnabled;
+      state.transferEnabled = estadoResult.transferEnabled !== false;
       
       updateStats();
       updateCancha();
       renderPacks();
       updateTotal();
+      applyPaymentMode();
     } else {
       console.error('getEstado falló:', estadoResult);
     }
