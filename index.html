@@ -970,6 +970,25 @@
     }
     .copy-btn:hover { background: #1f4480; }
     .copy-btn.copied { background: var(--verde-cdp); }
+    .toggle-wrap {
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      background: #f3f6fb; border: 1px solid #e2e8f3; border-radius: 12px;
+      padding: 14px 16px; text-align: left; cursor: pointer;
+    }
+    .toggle-text { font-weight: 600; color: var(--azul-cdp); font-size: 0.98rem; }
+    .toggle { position: relative; display: inline-block; width: 52px; height: 30px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; cursor: pointer; inset: 0;
+      background: #c4ccd8; border-radius: 30px; transition: .2s;
+    }
+    .toggle-slider::before {
+      content: ""; position: absolute; height: 24px; width: 24px; left: 3px; top: 3px;
+      background: #fff; border-radius: 50%; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.3);
+    }
+    .toggle input:checked + .toggle-slider { background: var(--verde-cdp); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(22px); }
+    .toggle-hint { font-size: 0.85rem; color: #666; margin-top: 10px; text-align: left; min-height: 1.2em; }
   </style>
 </head>
 <body>
@@ -1157,6 +1176,22 @@
       <h3>¡GRACIAS!</h3>
       <p id="modalMessage">Tu aporte fue registrado. Te contactaremos para coordinar el pago.</p>
       <button class="btn-primary" onclick="closeModal()">CERRAR</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalMuro">
+    <div class="modal">
+      <h3 style="margin-bottom:6px;">¡Un último paso! 🏑</h3>
+      <p style="margin-bottom:18px;">Antes de continuar, contanos si querés que tu nombre aparezca en el muro de donantes.</p>
+      <label class="toggle-wrap" for="muroToggle">
+        <span class="toggle-text">Aparecer en el muro de donantes</span>
+        <span class="toggle">
+          <input type="checkbox" id="muroToggle" checked>
+          <span class="toggle-slider"></span>
+        </span>
+      </label>
+      <p class="toggle-hint" id="muroHint"></p>
+      <button class="btn-primary" id="btnMuroContinuar" style="margin-top:18px;">CONTINUAR</button>
     </div>
   </div>
 
@@ -1371,14 +1406,9 @@ document.getElementById('customMetros').addEventListener('input', function() {
   updatePackSelection();
 });
 
-document.getElementById('aporteForm').addEventListener('submit', async function(e) {
+// Submit transferencia -> primero el paso del muro de donantes
+document.getElementById('aporteForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  
-  const btn = document.getElementById('btnSubmit');
-  const originalContent = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<div class="loading-spinner"></div>';
-  
   const data = {
     nombre: document.getElementById('nombre').value,
     email: document.getElementById('email').value,
@@ -1386,14 +1416,12 @@ document.getElementById('aporteForm').addEventListener('submit', async function(
     metros: state.selectedMetros,
     metodoPago: 'TRANSFERENCIA'
   };
-  
-  try {
-    const result = await callServer('registrarAporte', data);
-    
-    btn.disabled = false;
-    btn.innerHTML = originalContent;
-    
-    if (result.success) {
+  abrirModalMuro('TRANSFERENCIA', data);
+});
+
+async function procesarTransferencia(data) {
+  const result = await callServer('registrarAporte', data);
+  if (result.success) {
       const ref = result.id;
       const aliasCDP = 'cdp.jju';
       const cvuCDP = '0000003100061256966092';
@@ -1430,14 +1458,9 @@ document.getElementById('aporteForm').addEventListener('submit', async function(
       updateTotal();
       updatePackSelection();
     } else {
-      alert(result.error || 'Error al registrar el aporte');
+      throw new Error(result.error || 'Error al registrar el aporte');
     }
-  } catch (err) {
-    btn.disabled = false;
-    btn.innerHTML = originalContent;
-    alert('Error de conexión: ' + err.message);
-  }
-});
+}
 
 document.getElementById('btnLoadMore').addEventListener('click', async function() {
   this.disabled = true;
@@ -1534,28 +1557,58 @@ function handleReturnStatus() {
 }
 
 // Pago con MercadoPago (Checkout Pro)
-document.getElementById('btnMP').addEventListener('click', async function () {
+document.getElementById('btnMP').addEventListener('click', function () {
   const d = getFormData();
   if (!validarForm(d)) return;
+  d.metodoPago = 'MERCADOPAGO';
+  abrirModalMuro('MERCADOPAGO', d);
+});
 
+async function procesarMercadoPago(data) {
+  const result = await callServer('crearPreferencia', data);
+  if (result && result.success && result.initPoint) {
+    window.location.href = result.initPoint;
+  } else {
+    throw new Error((result && result.error) || 'No se pudo iniciar el pago con MercadoPago.');
+  }
+}
+
+// ----- Paso intermedio: muro de donantes -----
+let pendingPago = null;
+function abrirModalMuro(metodo, data) {
+  pendingPago = { metodo: metodo, data: data };
+  document.getElementById('muroToggle').checked = true;
+  actualizarMuroHint();
+  document.getElementById('modalMuro').classList.add('active');
+}
+function actualizarMuroHint() {
+  const on = document.getElementById('muroToggle').checked;
+  document.getElementById('muroHint').textContent = on
+    ? 'Tu nombre se mostrará junto a tu aporte. ¡Gracias por ser parte!'
+    : 'Tu aporte será anónimo: no se mostrará tu nombre en el muro (igual cuenta para la cancha).';
+}
+document.getElementById('muroToggle').addEventListener('change', actualizarMuroHint);
+
+document.getElementById('btnMuroContinuar').addEventListener('click', async function () {
+  if (!pendingPago) return;
   const btn = this;
   const original = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = '<div class="loading-spinner"></div>';
-
+  pendingPago.data.anonimo = !document.getElementById('muroToggle').checked;
   try {
-    const result = await callServer('crearPreferencia', d);
-    if (result && result.success && result.initPoint) {
-      window.location.href = result.initPoint;
+    if (pendingPago.metodo === 'TRANSFERENCIA') {
+      await procesarTransferencia(pendingPago.data);
+      document.getElementById('modalMuro').classList.remove('active');
     } else {
-      btn.disabled = false;
-      btn.innerHTML = original;
-      alert((result && result.error) || 'No se pudo iniciar el pago con MercadoPago.');
+      await procesarMercadoPago(pendingPago.data); // redirige a MercadoPago
     }
+    pendingPago = null;
   } catch (err) {
+    alert(err.message || 'Error de conexión');
+  } finally {
     btn.disabled = false;
     btn.innerHTML = original;
-    alert('Error de conexión: ' + err.message);
   }
 });
 
