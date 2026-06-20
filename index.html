@@ -927,6 +927,25 @@
     .admin-btn.no { background: #e74c3c; color: #fff; }
     .admin-btn.wa { background: #25D366; color: #fff; }
     .admin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #25D366;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 6px 18px rgba(37,211,102,0.35);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .wa-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(37,211,102,0.45);
+    }
+    .wa-btn svg { flex-shrink: 0; }
   </style>
 </head>
 <body>
@@ -1364,9 +1383,15 @@ document.getElementById('aporteForm').addEventListener('submit', async function(
       html += '<span style="display:block;margin:10px 0;font-size:1.15rem;font-weight:700;color:var(--azul-cdp);">Alias: ' + alias + '</span>';
       html += 'Monto: <b>' + monto + '</b><br>';
       html += 'Referencia: <b>' + ref + '</b><br><br>';
-      html += 'Después enviá el comprobante';
-      if (waLink) html += ' por <a href="' + waLink + '" target="_blank" rel="noopener" style="color:var(--verde-cdp);font-weight:700;">WhatsApp</a>';
-      html += '. Tu aporte se confirma cuando recibimos el pago.';
+      if (waLink) {
+        html += '<span style="display:block;margin-bottom:12px;">Y <b>envi\u00e1 el comprobante</b> haciendo clic ac\u00e1 \uD83D\uDC47</span>';
+        html += '<a href="' + waLink + '" target="_blank" rel="noopener" class="wa-btn">'
+             + '<svg viewBox="0 0 32 32" width="22" height="22" fill="#ffffff" aria-hidden="true"><path d="M16.04 4C9.96 4 5 8.95 5 15.02c0 2.05.56 3.99 1.62 5.72L5 28l7.46-1.6a11 11 0 0 0 3.58.6h.01C22.12 27 27 22.05 27 15.98 27 9.92 22.12 4 16.04 4zm0 20.13h-.01c-1.06 0-2.1-.28-3-.82l-.22-.13-3.72.8.79-3.63-.14-.23a8.94 8.94 0 0 1-1.37-4.82c0-4.96 4.04-9 9.01-9 2.4 0 4.66.94 6.36 2.64a8.93 8.93 0 0 1 2.63 6.36c0 4.96-4.04 9-9.01 9zm4.95-6.74c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.18-1.34-.8-.72-1.35-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.4-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.44-.46-.61-.47-.16-.01-.34-.01-.52-.01-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.3 0 1.36.98 2.67 1.12 2.85.14.18 1.93 2.95 4.68 4.13.65.28 1.16.45 1.56.58.65.21 1.25.18 1.72.11.52-.08 1.6-.65 1.83-1.29.23-.63.23-1.17.16-1.29-.07-.11-.25-.18-.52-.32z"/></svg>'
+             + 'Enviar comprobante por WhatsApp</a>';
+        html += '<span style="display:block;margin-top:14px;font-size:0.9rem;color:#666;">Tu aporte se confirma cuando recibimos el pago.</span>';
+      } else {
+        html += 'Despu\u00e9s envi\u00e1nos el comprobante de la transferencia. Tu aporte se confirma cuando recibimos el pago.';
+      }
 
       document.getElementById('modalMessage').innerHTML = html;
       document.getElementById('modalSuccess').classList.add('active');
