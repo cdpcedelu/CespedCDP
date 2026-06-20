@@ -15,9 +15,12 @@
   <!-- Open Graph (previsualización en WhatsApp, Facebook, etc.) -->
   <meta property="og:title" content="Sé parte de la cancha 🏑">
   <meta property="og:description" content="Entre todos construimos el césped sintético del Club de Profesionales. Cada metro cuenta. ¡Sumá el tuyo!">
-  <meta property="og:image" content="https://sintetico.cdpcdelu.ar/og.png?v=2">
+  <meta property="og:image" content="https://sintetico.cdpcdelu.ar/og.jpg">
+  <meta property="og:image:secure_url" content="https://sintetico.cdpcdelu.ar/og.jpg">
+  <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Construí la cancha con nosotros - CDP Hockey">
   <meta property="og:url" content="https://sintetico.cdpcdelu.ar">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_AR">
@@ -25,7 +28,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Sé parte de la cancha 🏑">
   <meta name="twitter:description" content="Entre todos construimos el césped sintético del Club de Profesionales. ¡Sumá tu metro²!">
-  <meta name="twitter:image" content="https://sintetico.cdpcdelu.ar/og.png?v=2">
+  <meta name="twitter:image" content="https://sintetico.cdpcdelu.ar/og.jpg">
   
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1evrGwiWdvbM39EVJk0LGtbM8Fa100IFF">
@@ -946,6 +949,27 @@
       box-shadow: 0 10px 26px rgba(37,211,102,0.45);
     }
     .wa-btn svg { flex-shrink: 0; }
+    .copy-box { margin: 14px 0; text-align: left; }
+    .copy-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      background: #f3f6fb; border: 1px solid #e2e8f3; border-radius: 10px;
+      padding: 10px 12px; margin-bottom: 8px;
+    }
+    .copy-label {
+      display: block; font-size: 0.72rem; text-transform: uppercase;
+      letter-spacing: 0.5px; color: #888;
+    }
+    .copy-val {
+      display: block; font-size: 1.05rem; font-weight: 700;
+      color: var(--azul-cdp); word-break: break-all; font-family: monospace;
+    }
+    .copy-btn {
+      flex-shrink: 0; background: var(--azul-cdp); color: #fff; border: none;
+      border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 0.85rem;
+      cursor: pointer; transition: background .15s ease;
+    }
+    .copy-btn:hover { background: #1f4480; }
+    .copy-btn.copied { background: var(--verde-cdp); }
   </style>
 </head>
 <body>
@@ -1371,7 +1395,8 @@ document.getElementById('aporteForm').addEventListener('submit', async function(
     
     if (result.success) {
       const ref = result.id;
-      const alias = state.aliasCBU || '(consultá el alias)';
+      const aliasCDP = 'cdp.jju';
+      const cvuCDP = '0000003100061256966092';
       const monto = formatCurrency(result.monto);
       let wa = String(state.whatsapp || '').replace(/\D/g, '');
       if (wa && !wa.startsWith('54')) wa = '549' + wa;
@@ -1380,7 +1405,12 @@ document.getElementById('aporteForm').addEventListener('submit', async function(
 
       let html = 'Registraste <b>' + result.metros + ' m\u00b2</b> por <b>' + monto + '</b>.<br><br>';
       html += 'Para confirmar tu aporte, transfer\u00ed a:';
-      html += '<span style="display:block;margin:10px 0;font-size:1.15rem;font-weight:700;color:var(--azul-cdp);">Alias: ' + alias + '</span>';
+      html += '<div class="copy-box">'
+           + '<div class="copy-row"><div><span class="copy-label">Alias</span><span class="copy-val">' + aliasCDP + '</span></div>'
+           + '<button type="button" class="copy-btn" onclick="copiarDato(\'' + aliasCDP + '\', this)">Copiar</button></div>'
+           + '<div class="copy-row"><div><span class="copy-label">CVU</span><span class="copy-val">' + cvuCDP + '</span></div>'
+           + '<button type="button" class="copy-btn" onclick="copiarDato(\'' + cvuCDP + '\', this)">Copiar</button></div>'
+           + '</div>';
       html += 'Monto: <b>' + monto + '</b><br>';
       html += 'Referencia: <b>' + ref + '</b><br><br>';
       if (waLink) {
@@ -1712,6 +1742,30 @@ async function refreshWall() {
       updateContributorsCount(ap.total || 0);
     }
   } catch (e) { /* silencioso */ }
+}
+
+function copiarDato(texto, btn) {
+  function feedback() {
+    var prev = btn.textContent;
+    btn.textContent = '\u00a1Copiado!';
+    btn.classList.add('copied');
+    setTimeout(function () { btn.textContent = prev; btn.classList.remove('copied'); }, 1500);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(texto).then(feedback).catch(function () { fallbackCopy(texto); feedback(); });
+  } else {
+    fallbackCopy(texto); feedback();
+  }
+}
+function fallbackCopy(texto) {
+  var ta = document.createElement('textarea');
+  ta.value = texto;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
 }
 
 // Start
