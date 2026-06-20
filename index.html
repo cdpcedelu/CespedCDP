@@ -1182,9 +1182,9 @@
   <div class="modal-overlay" id="modalMuro">
     <div class="modal">
       <h3 style="margin-bottom:6px;">¡Un último paso! 🏑</h3>
-      <p style="margin-bottom:18px;">Antes de continuar, contanos si querés que tu nombre aparezca en el muro de donantes.</p>
+      <p style="margin-bottom:18px;">Antes de continuar, contanos si querés que tu nombre aparezca en el muro de contribuyentes.</p>
       <label class="toggle-wrap" for="muroToggle">
-        <span class="toggle-text">Aparecer en el muro de donantes</span>
+        <span class="toggle-text">Aparecer en el muro de contribuyentes</span>
         <span class="toggle">
           <input type="checkbox" id="muroToggle" checked>
           <span class="toggle-slider"></span>
@@ -1406,7 +1406,7 @@ document.getElementById('customMetros').addEventListener('input', function() {
   updatePackSelection();
 });
 
-// Submit transferencia -> primero el paso del muro de donantes
+// Submit transferencia -> primero el paso del muro de contribuyentes
 document.getElementById('aporteForm').addEventListener('submit', function(e) {
   e.preventDefault();
   const data = {
@@ -1573,7 +1573,7 @@ async function procesarMercadoPago(data) {
   }
 }
 
-// ----- Paso intermedio: muro de donantes -----
+// ----- Paso intermedio: muro de contribuyentes -----
 let pendingPago = null;
 function abrirModalMuro(metodo, data) {
   pendingPago = { metodo: metodo, data: data };
