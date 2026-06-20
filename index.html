@@ -1656,7 +1656,7 @@ function renderAdminList(items) {
     return;
   }
   cont.innerHTML = items.map(function (a) {
-    let wa = (a.telefono || '').replace(/\D/g, '');
+    let wa = String(a.telefono || '').replace(/\D/g, '');
     if (wa && !wa.startsWith('54')) wa = '549' + wa;
     const waBtn = wa ? '<a class="admin-btn wa" href="https://wa.me/' + wa + '" target="_blank" rel="noopener">WhatsApp</a>' : '';
     return '<div class="admin-card" data-id="' + a.id + '">' +
