@@ -1381,13 +1381,11 @@ function renderAportes(append = false) {
       </div>
     </div>
   `).join('');
-  
-  if (append) {
-    list.innerHTML += html;
-  } else {
-    list.innerHTML = html;
-  }
-  
+
+  // Siempre redibuja la lista completa (state.aportes ya está acumulada).
+  // Así se evitan duplicados al usar "Ver más".
+  list.innerHTML = html;
+
   document.getElementById('btnLoadMore').classList.toggle('hidden', !state.hasMoreAportes);
 }
 
