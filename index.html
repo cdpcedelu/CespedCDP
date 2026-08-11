@@ -10,6 +10,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Construí la Cancha | CDP Hockey</title>
 
   <!-- Open Graph (previsualización en WhatsApp, Facebook, etc.) -->
@@ -1225,8 +1228,12 @@ let state = {
 // =============================================
 async function callServer(action, data = {}) {
   try {
-    const response = await fetch(CONFIG.SCRIPT_URL, {
+    // Cache-busting: cada pedido lleva un timestamp único + no-store,
+    // así los metros/datos siempre llegan frescos (sin caché de navegador/proxy).
+    const url = CONFIG.SCRIPT_URL + '?t=' + Date.now();
+    const response = await fetch(url, {
       method: 'POST',
+      cache: 'no-store',
       headers: {
         'Content-Type': 'text/plain;charset=utf-8',
       },
@@ -1819,8 +1826,23 @@ function fallbackCopy(texto) {
   document.body.removeChild(ta);
 }
 
+// Refresco liviano: solo metros vendidos + cancha (no toca la lista del muro)
+async function refreshEstadoSolo() {
+  try {
+    const est = await callServer('getEstado');
+    if (est && est.success) {
+      state.metrosVendidos = est.metrosVendidos;
+      updateStats();
+      updateCancha();
+    }
+  } catch (e) { /* silencioso */ }
+}
+
 // Start
 init();
+
+// Auto-actualiza los metros cada 30 segundos (sin recargar la página)
+setInterval(refreshEstadoSolo, 30000);
 </script>
 
 </body>
